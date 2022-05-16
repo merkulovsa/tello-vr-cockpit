@@ -54,33 +54,21 @@
       "type": "vibration"
     },
     {
-      "name": "/actions/platformer/in/Move",
-      "type": "vector2"
-    },
-    {
-      "name": "/actions/platformer/in/Jump",
+      "name": "/actions/cockpit/in/GrabGrip",
       "type": "boolean"
     },
     {
-      "name": "/actions/buggy/in/Steering",
-      "type": "vector2"
-    },
-    {
-      "name": "/actions/buggy/in/Throttle",
-      "type": "vector1"
-    },
-    {
-      "name": "/actions/buggy/in/Brake",
+      "name": "/actions/cockpit/in/ReCenter",
       "type": "boolean"
     },
     {
-      "name": "/actions/buggy/in/Reset",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/mixedreality/in/ExternalCamera",
+      "name": "/actions/cockpit/in/Pose",
       "type": "pose",
-      "requirement": "optional"
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/cockpit/in/GrabPinch",
+      "type": "boolean"
     }
   ],
   "action_sets": [
@@ -89,15 +77,7 @@
       "usage": "single"
     },
     {
-      "name": "/actions/platformer",
-      "usage": "single"
-    },
-    {
-      "name": "/actions/buggy",
-      "usage": "single"
-    },
-    {
-      "name": "/actions/mixedreality",
+      "name": "/actions/cockpit",
       "usage": "single"
     }
   ],
@@ -167,9 +147,11 @@
       "/actions/default/in/SkeletonRightHand": "Skeleton (Right)",
       "/actions/default/in/Teleport": "Teleport",
       "/actions/default/out/Haptic": "Haptic",
-      "/actions/platformer/in/Jump": "Jump",
       "/actions/default/in/SnapTurnLeft": "Snap Turn (Left)",
-      "/actions/default/in/SnapTurnRight": "Snap Turn (Right)"
+      "/actions/default/in/SnapTurnRight": "Snap Turn (Right)",
+      "/actions/cockpit/in/GrabGrip": "GrabGrip",
+      "/actions/cockpit/in/ReCenter": "ReCenter",
+      "/actions/cockpit/in/Pose": "Pose"
     }
   ]
 }

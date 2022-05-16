@@ -29,7 +29,7 @@ public class JoystickComponent : MonoBehaviour
 
         targetMid = (targetMin + targetMax) * 0.5f;
 
-        defaultRotation = transform.rotation;
+        defaultRotation = joystick.transform.rotation;
     }
 
     // Update is called once per frame
@@ -46,9 +46,13 @@ public class JoystickComponent : MonoBehaviour
             value.x = distance.x / radius;
             value.y = distance.z / radius;
 
-            var rotation = Quaternion.LookRotation((target.transform.position - joystick.transform.position).normalized, Vector3.up);
-
-            joystick.transform.rotation = rotation;
+            var baseRotation = Quaternion.LookRotation((target.transform.position - joystick.transform.position).normalized, Vector3.up);
+            baseRotation.eulerAngles = new Vector3(
+                baseRotation.eulerAngles.x, 
+                baseRotation.eulerAngles.y, 
+                -baseRotation.eulerAngles.y
+            );
+            joystick.transform.rotation = baseRotation;
         } else {
             joystick.transform.rotation = defaultRotation;
         }

@@ -7,6 +7,9 @@ public class PoseHandler : MonoBehaviour
 {
     public SteamVR_Behaviour_Pose behaviour_Pose;
     public SteamVR_Action_Boolean grabAction;
+    public SteamVR_Action_Boolean menuAction;
+    public GameObject center;
+    public GameObject cockpit;
 
     SteamVR_Input_Sources handType;
     JoystickComponent joystick;
@@ -25,7 +28,7 @@ public class PoseHandler : MonoBehaviour
             joystick = collidingObject.GetComponent<JoystickComponent>();
         }
 
-        if (grabAction.GetStateUp(handType)) {
+        if (grabAction.GetStateUp(handType) && joystick) {
             joystick.Release();
             joystick = null;
         }
@@ -33,7 +36,10 @@ public class PoseHandler : MonoBehaviour
         if (grabAction.GetState(handType) && joystick) {
             joystick.Hold(transform.position);
         }
-        
+
+        if (menuAction.GetStateDown(handType)) {
+            cockpit.transform.position = center.transform.position;
+        }
     }
 
     private void SetCollidingObject(Collider collider) {
