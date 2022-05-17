@@ -6,13 +6,15 @@ using Valve.VR;
 public class PoseHandler : MonoBehaviour
 {
     public SteamVR_Behaviour_Pose behaviour_Pose;
-    public SteamVR_Action_Boolean grabAction;
+    public SteamVR_Action_Boolean grabGripAction;
+    public SteamVR_Action_Boolean grabPinchAction;
     public SteamVR_Action_Boolean menuAction;
     public GameObject center;
     public GameObject cockpit;
 
     SteamVR_Input_Sources handType;
-    JoystickComponent joystick;
+    PoseJoystick joystick;
+    PoseButton button;
     Collider collidingObject;
 
     // Start is called before the first frame update
@@ -24,20 +26,29 @@ public class PoseHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (grabAction.GetStateDown(handType) && collidingObject) {
-            joystick = collidingObject.GetComponent<JoystickComponent>();
+        if (grabPinchAction != null && grabPinchAction.GetStateDown(handType) && collidingObject) {
+            // print("+");
+            joystick = collidingObject.GetComponent<PoseJoystick>();
         }
 
-        if (grabAction.GetStateUp(handType) && joystick) {
+        if (grabPinchAction != null && grabPinchAction.GetStateUp(handType) && joystick) {
             joystick.Release();
             joystick = null;
         }
 
-        if (grabAction.GetState(handType) && joystick) {
+        if (grabPinchAction != null && grabPinchAction.GetState(handType) && joystick) {
             joystick.Hold(transform.position);
         }
 
-        if (menuAction.GetStateDown(handType)) {
+        if (grabGripAction != null && grabGripAction.GetState(handType) && collidingObject) {
+            button = collidingObject.GetComponent<PoseButton>();
+
+            if (button != null && !button.isPressed) {
+                button.Hold();
+            }
+        }
+
+        if (menuAction != null && menuAction.GetStateDown(handType)) {
             cockpit.transform.position = center.transform.position;
         }
     }
@@ -60,5 +71,10 @@ public class PoseHandler : MonoBehaviour
 
     private void OnTriggerExit(Collider other) {
         ClearCollidingObject();
+
+        if (button) {
+            button.Release();
+            button = null;
+        }
     }
 }

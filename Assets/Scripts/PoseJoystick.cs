@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JoystickComponent : MonoBehaviour
+public class PoseJoystick : MonoBehaviour
 {
     public GameObject joystick;
     public GameObject target;
@@ -15,6 +15,7 @@ public class JoystickComponent : MonoBehaviour
     Vector3 targetMax;
     Vector3 targetMid;
     Quaternion defaultRotation;
+    Vector3 targetPos;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,8 @@ public class JoystickComponent : MonoBehaviour
         targetMax.z = Y ? radius : 0;
 
         targetMid = (targetMin + targetMax) * 0.5f;
+
+        targetPos = Vector3.zero;
 
         defaultRotation = joystick.transform.rotation;
     }
@@ -60,9 +63,14 @@ public class JoystickComponent : MonoBehaviour
 
     public void Release() {
         target.transform.localPosition = targetMid;
+        targetPos = Vector3.zero;
     }
 
     public void Hold(Vector3 position) {
-        target.transform.position = position;
+        if (targetPos.magnitude > 0) {
+            target.transform.position += position - targetPos;
+        }
+        
+        targetPos = position;
     }
 }

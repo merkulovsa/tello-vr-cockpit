@@ -65,8 +65,10 @@ public class TelloController : SingletonMonoBehaviour<TelloController> {
 
 	};
 
-	public JoystickComponent joystickRudder;
-	public JoystickComponent joystickAltitude;
+	public PoseJoystick joystickRudder;
+	public PoseJoystick joystickAltitude;
+	public PoseButton takeOffButton;
+	public PoseButton landButton;
 
 	override protected void Awake()
 	{
@@ -106,7 +108,6 @@ public class TelloController : SingletonMonoBehaviour<TelloController> {
 
 	// Update is called once per frame
 	void Update () {
-
 		if (Input.GetKeyDown(KeyCode.T)) {
 			Tello.takeOff();
 		} else if (Input.GetKeyDown(KeyCode.L)) {
