@@ -22,13 +22,11 @@ public class PoseButton : MonoBehaviour
     void Update()
     {
         if (GetStateDown()) {
-            tween.Stop();
             tween.reversed = false;
             tween.Play();
         }
 
         if (GetStateUp()) {
-            tween.Stop();
             tween.reversed = true;
             tween.Play();
         }

@@ -66,13 +66,9 @@ public class Tween : MonoBehaviour
 
         var elapsed = easings[(int)easingType].ease(Mathf.Clamp01((Time.time - startTime) / duration));
 
-        if (reversed) {
-            elapsed = 1 - elapsed;
-        }
-
         for (int i = 0; i < length; ++i)
         {
-            values[i] = Mathf.Lerp(valuesFrom[i], valuesTo[i], elapsed);
+            values[i] = Mathf.Lerp(valuesFrom[i], valuesTo[i], reversed ? (1 - elapsed) : elapsed);
         }
 
         onUpdate?.Invoke(values);

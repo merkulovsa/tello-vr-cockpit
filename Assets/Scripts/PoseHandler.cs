@@ -26,35 +26,46 @@ public class PoseHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (grabPinchAction != null && grabPinchAction.GetStateDown(handType) && collidingObject) {
-            // print("+");
-            joystick = collidingObject.GetComponent<PoseJoystick>();
-        }
+        if (grabPinchAction != null) {
+            if (joystick != null) {
+                if (grabPinchAction.GetState(handType)) {
+                    joystick.Hold(transform.position);
+                }
 
-        if (grabPinchAction != null && grabPinchAction.GetStateUp(handType) && joystick) {
-            joystick.Release();
-            joystick = null;
-        }
-
-        if (grabPinchAction != null && grabPinchAction.GetState(handType) && joystick) {
-            joystick.Hold(transform.position);
-        }
-
-        if (grabGripAction != null && grabGripAction.GetState(handType) && collidingObject) {
-            button = collidingObject.GetComponent<PoseButton>();
-
-            if (button != null && !button.isPressed) {
-                button.Hold();
+                if (grabPinchAction.GetStateUp(handType)) {
+                    joystick.Release();
+                    joystick = null;
+                }
             }
         }
 
-        if (menuAction != null && menuAction.GetStateDown(handType)) {
-            cockpit.transform.position = center.transform.position;
+        if (grabGripAction != null) {
+            if (button != null) {
+                if (grabGripAction.GetState(handType)) {
+                    button.Hold();
+                } else {
+                    button.Release();
+                }
+            }
+        }
+
+        if (menuAction != null) {
+            if (menuAction.GetStateDown(handType)) {
+                cockpit.transform.position = center.transform.position;
+            }
         }
     }
 
     private void SetCollidingObject(Collider collider) {
-        collidingObject = collider;
+        if (collider.TryGetComponent(out PoseButton _button)) {
+            button = _button;
+            collidingObject = collider;
+        }
+        
+        if (collider.TryGetComponent(out PoseJoystick _joystick)) {
+            joystick = _joystick;
+            collidingObject = collider;
+        }
     }
 
     private void ClearCollidingObject() {
@@ -62,19 +73,23 @@ public class PoseHandler : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        SetCollidingObject(other);
+        if (collidingObject == null) {
+            SetCollidingObject(other);
+        }
     }
 
-    private void OnTriggerStay(Collider other) {
-        SetCollidingObject(other);
-    }
+    // private void OnTriggerStay(Collider other) {
+    //     SetCollidingObject(other);
+    // }
 
     private void OnTriggerExit(Collider other) {
-        ClearCollidingObject();
+        if (collidingObject == other) {
+            ClearCollidingObject();
 
-        if (button) {
-            button.Release();
-            button = null;
+            if (button != null) {
+                button.Release();
+                button = null;
+            }
         }
     }
 }
