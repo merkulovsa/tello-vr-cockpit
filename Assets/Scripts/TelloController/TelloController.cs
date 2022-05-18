@@ -146,18 +146,18 @@ public class TelloController : SingletonMonoBehaviour<TelloController> {
 		}
 
 		if (enablePoseInput) {
-			if (Tello.state.onGround && takeOffButton.GetStateDown()) {
+			if (takeOffButton.GetStateDown()) {
 				Tello.takeOff();
 			}
 
-			if (Tello.state.flying && landButton.GetStateDown()) {
+			if (landButton.GetStateDown()) {
 				Tello.land();
 			}
 
-			rx = joystickRudder.value.x;
-			ry = joystickRudder.value.y;
-			lx = joystickAltitude.value.x;
-			ly = joystickAltitude.value.y;
+			rx = -joystickRudder.value.x;
+			ry = -joystickRudder.value.y;
+			lx = -joystickAltitude.value.x;
+			ly = -joystickAltitude.value.y;
 		}
 
 		Tello.controllerState.setAxis(lx, ly, rx, ry);
@@ -167,7 +167,7 @@ public class TelloController : SingletonMonoBehaviour<TelloController> {
 	private void Tello_onUpdate(int cmdId)
 	{
 		//throw new System.NotImplementedException();
-		// Debug.Log("Tello_onUpdate : " + Tello.state);
+		Debug.Log("Tello_onUpdate : " + Tello.state);
 	}
 
 	private void Tello_onConnection(Tello.ConnectionState newState)

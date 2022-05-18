@@ -98,6 +98,7 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - _AtmosphereThickness: 1
+    - _BorderColorMix: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -123,13 +124,14 @@ Material:
     - _SunSize: 0.04
     - _SunSizeConvergence: 5
     - _UVOffsetX: 0.1
-    - _UVOffsetY: 0.45
+    - _UVOffsetY: 0.5
     - _UVScaleX: 0.3
-    - _UVScaleY: 0.3
+    - _UVScaleY: 0.25
     - _UVSec: 0
     - _WireThickness: 100
     - _ZWrite: 1
     m_Colors:
+    - _BorderColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}

@@ -10,6 +10,8 @@ Shader "Custom/CustomSurfaceSkyBox"
         _UVScaleY ("ScaleY", Float) = 1
         _UVOffsetX ("OffsetX", Float) = 0
         _UVOffsetY ("OffsetY", Float) = 0
+        _BorderColor ("BorderColor", Color) = (0,0,0,1)
+        _BorderColorMix ("BorderColorMix", Float) = 0
     }
     SubShader
     {
@@ -22,7 +24,7 @@ Shader "Custom/CustomSurfaceSkyBox"
         #pragma surface surf Standard fullforwardshadows
 
         // Use shader model 3.0 target, to get nicer looking lighting
-        #pragma target 3.0
+        // #pragma target 3.0
 
         sampler2D _MainTex;
 
@@ -38,6 +40,8 @@ Shader "Custom/CustomSurfaceSkyBox"
         float _UVScaleY;
         float _UVOffsetX;
         float _UVOffsetY;
+        fixed4 _BorderColor;
+        float _BorderColorMix;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -51,13 +55,21 @@ Shader "Custom/CustomSurfaceSkyBox"
             float2 uv = IN.uv_MainTex;
             uv.x -= _UVOffsetX;
             uv.y -= _UVOffsetY;
+
             uv.x /= _UVScaleX;
             uv.y /= _UVScaleY;
-            uv.x = clamp(uv.x, 0, 1);
+
+            float isBorder = step(1 - uv.x, 0) + step(1 - uv.y, 0) + step(uv.x, 0) + step(uv.y, 0);
+
+            uv.x = -clamp(uv.x, 0, 1);
             uv.y = clamp(uv.y, 0, 1);
 
+            fixed4 t = tex2D (_MainTex, uv);
+            fixed4 b = lerp(t, _BorderColor, _BorderColorMix);
+
             // Albedo comes from a texture tinted by color
-            fixed4 c = tex2D (_MainTex, uv) * _Color;
+            fixed4 c = (t * (1 - isBorder) + b * isBorder) * _Color;
+            // fixed4 c = isBorder * _Color;
             o.Albedo = c.rgb;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;

@@ -9,6 +9,8 @@ public class PoseButton : MonoBehaviour
     Renderer renderer;
     Tween tween;
     bool _isPressed = false;
+    bool stateDown = false;
+    bool stateUp = false;
 
     // Start is called before the first frame update
     void Start()
@@ -21,33 +23,40 @@ public class PoseButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GetStateDown()) {
+        stateDown = false;
+        stateUp = false;
+
+        if (isPressed && !_isPressed) {
+            stateDown = true;
+
             tween.reversed = false;
             tween.Play();
         }
 
-        if (GetStateUp()) {
+        if (!isPressed && _isPressed) {
+            stateUp = true;
+
             tween.reversed = true;
             tween.Play();
         }
 
-        this._isPressed = this.isPressed;
+        _isPressed = isPressed;
     }
 
     public void Hold() {
-        this.isPressed = true;
+        isPressed = true;
     }
 
     public void Release() {
-        this.isPressed = false;
+        isPressed = false;
     }
 
     public bool GetStateDown() {
-        return this.isPressed && !this._isPressed;
+        return stateDown;
     }
 
     public bool GetStateUp() {
-        return !this.isPressed && this._isPressed;
+        return stateUp;
     }
 
     void OnTweenUpdate(float[] values) {

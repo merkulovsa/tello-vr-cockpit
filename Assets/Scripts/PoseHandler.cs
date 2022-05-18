@@ -34,7 +34,6 @@ public class PoseHandler : MonoBehaviour
 
                 if (grabPinchAction.GetStateUp(handType)) {
                     joystick.Release();
-                    joystick = null;
                 }
             }
         }
@@ -43,7 +42,7 @@ public class PoseHandler : MonoBehaviour
             if (button != null) {
                 if (grabGripAction.GetState(handType)) {
                     button.Hold();
-                } else {
+                } else if (grabGripAction.GetStateUp(handType)) {
                     button.Release();
                 }
             }
@@ -89,6 +88,11 @@ public class PoseHandler : MonoBehaviour
             if (button != null) {
                 button.Release();
                 button = null;
+            }
+
+            if (joystick != null) {
+                joystick.Release();
+                joystick = null;
             }
         }
     }
