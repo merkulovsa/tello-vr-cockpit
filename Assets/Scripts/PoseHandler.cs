@@ -77,10 +77,6 @@ public class PoseHandler : MonoBehaviour
         }
     }
 
-    // private void OnTriggerStay(Collider other) {
-    //     SetCollidingObject(other);
-    // }
-
     private void OnTriggerExit(Collider other) {
         if (collidingObject == other) {
             ClearCollidingObject();
@@ -90,7 +86,7 @@ public class PoseHandler : MonoBehaviour
                 button = null;
             }
 
-            if (joystick != null) {
+            if (joystick != null && !joystick.GetState()) {
                 joystick.Release();
                 joystick = null;
             }

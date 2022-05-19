@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PoseButton : MonoBehaviour
 {
-    public bool isPressed = false;
 
     Renderer renderer;
     Tween tween;
-    bool _isPressed = false;
+
+    bool isPressed = false;    bool _isPressed = false;
     bool stateDown = false;
     bool stateUp = false;
 
@@ -43,12 +43,8 @@ public class PoseButton : MonoBehaviour
         _isPressed = isPressed;
     }
 
-    public void Hold() {
-        isPressed = true;
-    }
-
-    public void Release() {
-        isPressed = false;
+    public bool GetState() {
+        return isPressed;
     }
 
     public bool GetStateDown() {
@@ -57,6 +53,14 @@ public class PoseButton : MonoBehaviour
 
     public bool GetStateUp() {
         return stateUp;
+    }
+
+    public void Hold() {
+        isPressed = true;
+    }
+
+    public void Release() {
+        isPressed = false;
     }
 
     void OnTweenUpdate(float[] values) {

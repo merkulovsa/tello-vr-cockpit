@@ -16,6 +16,10 @@ public class PoseJoystick : MonoBehaviour
     Vector3 targetMid;
     Quaternion defaultRotation;
     Vector3 targetPos;
+    bool isPressed = false;
+    bool _isPressed = false;
+    bool stateDown = false;
+    bool stateUp = false;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +42,19 @@ public class PoseJoystick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        stateDown = false;
+        stateUp = false;
+
+        if (isPressed && !_isPressed) {
+            stateDown = true;
+        }
+
+        if (!isPressed && _isPressed) {
+            stateUp = true;
+        }
+
+        _isPressed = isPressed;
+
         if (target) {
             var position = target.transform.localPosition;
             position.x = Mathf.Clamp(position.x, targetMin.x, targetMax.x);
@@ -61,12 +78,28 @@ public class PoseJoystick : MonoBehaviour
         }
     }
 
+    public bool GetState() {
+        return isPressed;
+    }
+
+    public bool GetStateDown() {
+        return stateDown;
+    }
+
+    public bool GetStateUp() {
+        return stateUp;
+    }
+
     public void Release() {
+        isPressed = false;
+
         target.transform.localPosition = targetMid;
         targetPos = Vector3.zero;
     }
 
     public void Hold(Vector3 position) {
+        isPressed = true;
+
         if (targetPos.magnitude > 0) {
             target.transform.position += position - targetPos;
         }

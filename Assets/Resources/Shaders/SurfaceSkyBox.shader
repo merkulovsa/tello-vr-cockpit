@@ -1,4 +1,4 @@
-Shader "Custom/CustomSurfaceSkyBox"
+Shader "Custom/SurfaceSkyBox"
 {
     Properties
     {

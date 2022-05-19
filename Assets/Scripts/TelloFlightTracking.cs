@@ -5,7 +5,7 @@ using TelloLib;
 
 public class TelloFlightTracking : MonoBehaviour
 {
-    struct LocalState
+    public struct LocalState
     {
         public int flyMode;
         public int height;
@@ -65,17 +65,14 @@ public class TelloFlightTracking : MonoBehaviour
     GameObject lastFlightPoint = null;
     Vector3 originalPosition;
     Vector3 originalRotation;
+    Vector3 previousPosition;
     float heightOffset;
-    bool isStarted = false;
+    bool startedTracking = false;
 
     public GameObject flightPoint;
 
-    public void StartTracking() {
-        isStarted = true;
-    }
-
-    public void StopTracking() {
-        isStarted = false;
+    public LocalState GetTelloState() {
+        return localState;
     }
 
     // Start is called before the first frame update
@@ -89,23 +86,41 @@ public class TelloFlightTracking : MonoBehaviour
     {
         UpdateLocalState();
 
-        if (isStarted) {
+        try {
             transform.eulerAngles = GetCurrentRotation();
+        } catch {};
 
-            if (localState.flyMode == 6) {
-                BeforeTakeOff();
-            } else {
-                transform.position = GetCurrentPosition();
+        // // take-off
+        // if (localState.flyMode == 11) {
+        //     originalPosition.x = localState.posX;
+        //     originalPosition.y = localState.posY;
+        //     originalPosition.z = localState.posZ;
+        //     heightOffset = localState.height * 0.1f;
+        //     startedTracking = true;
+        // } else if (startedTracking) {
+        //     var pendingPosition = GetCurrentPosition();
 
-                if (lastFlightPoint == null) {
-                    DrawFlightPoint(transform.position);
-                } else if (Vector3.Distance(transform.position, lastFlightPoint.transform.position) > 0.01f) {
-                    DrawFlightPoint(transform.position);
-                }
-            }
-        }
+        //     // if (previousPosition.magnitude == 0) {
+        //     //     previousPosition = pendingPosition;
+        //     // }
 
-        
+        //     var magnitude = (pendingPosition - previousPosition).magnitude;
+
+        //     // if (magnitude > 10) {
+        //     //     print("LOST TRACKING");
+        //     // } else {
+        //         transform.eulerAngles = GetCurrentRotation();
+        //         transform.position = pendingPosition + new Vector3(0, heightOffset, 0);
+
+        //         if (lastFlightPoint == null) {
+        //             DrawFlightPoint(transform.position);
+        //         } else if (magnitude < 0.01f) {
+        //             DrawFlightPoint(transform.position);
+        //         }
+                
+        //         previousPosition = pendingPosition;
+        //     // }
+        // }
     }
 
     Vector3 GetCurrentPosition() {
@@ -128,19 +143,15 @@ public class TelloFlightTracking : MonoBehaviour
     void DrawFlightPoint(Vector3 position) {
         var nextFlightPoint = Instantiate(flightPoint);
         nextFlightPoint.transform.parent = flightPoint.transform.parent;
-        nextFlightPoint.transform.position = position;
         var lineRenderer = nextFlightPoint.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, position);
+        lineRenderer.SetPosition(1, position);
 
         if (lastFlightPoint != null) {
-            lineRenderer.SetPosition(0, position - lastFlightPoint.transform.position);
+            lineRenderer.SetPosition(0, lastFlightPoint.GetComponent<LineRenderer>().GetPosition(1));
         }
 
         lastFlightPoint = nextFlightPoint;
-    }
-
-    void BeforeTakeOff() {
-        originalPosition = GetCurrentPosition();
-        heightOffset = localState.height;
     }
 
     void UpdateLocalState() {
